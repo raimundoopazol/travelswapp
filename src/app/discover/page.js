@@ -128,8 +128,20 @@ export default function Discover() {
               </div>
               <div style={{ color: '#7A8599', fontSize: 12, marginBottom: 10 }}>
                 📍 {l.location || 'Ubicación no especificada'} · Tasa: {l.rate}
+                {l.available_until && (
+                  <span style={{
+                    marginLeft: 8,
+                    color: new Date(l.available_until) < new Date() ? '#EF4444' : '#16A34A',
+                    fontWeight: 700
+                  }}>
+                    · {new Date(l.available_until) < new Date()
+                      ? '⛔ Expirado'
+                      : `⏰ Hasta ${new Date(l.available_until).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`
+                    }
+                  </span>
+                )}
               </div>
-              <button style={{ width: '100%', background: '#FFD000', border: 'none', borderRadius: 10, padding: '9px 0', fontWeight: 800, color: '#0D1B2A', fontSize: 14, cursor: 'pointer' }}>
+              <button onClick={() => router.push(`/chat/${l.user_id}`)} style={{ width: '100%', background: '#FFD000', border: 'none', borderRadius: 10, padding: '9px 0', fontWeight: 800, color: '#0D1B2A', fontSize: 14, cursor: 'pointer' }}>
                 💬 Iniciar Chat
               </button>
             </div>

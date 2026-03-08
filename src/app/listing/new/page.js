@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 
 export default function NewListing() {
   const [user, setUser] = useState(null)
-  const [form, setForm] = useState({ currency_have: 'USD', currency_want: 'EUR', amount: '', rate: '', location: '', lat: null, lng: null })
+  const [form, setForm] = useState({ currency_have: 'USD', currency_want: 'EUR', amount: '', rate: '', location: '', lat: null, lng: null, available_until: '' })
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const router = useRouter()
@@ -38,6 +38,7 @@ export default function NewListing() {
       location: form.location,
       lat: form.lat,
       lng: form.lng,
+      available_until: form.available_until || null,
       active: true,
     })
     if (error) {
@@ -116,12 +117,22 @@ export default function NewListing() {
         </div>
 
         {/* Location */}
-        <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ fontWeight: 700, color: '#0D1B2A', marginBottom: 8 }}>Ubicación</div>
           <LocationInput
             value={form.location}
             onChange={({ name, lat, lng }) => setForm(p => ({ ...p, location: name, lat, lng }))}
           />
+        </div>
+
+        {/* Available until */}
+        <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontWeight: 700, color: '#0D1B2A', marginBottom: 4 }}>¿Hasta cuándo estarás ahí?</div>
+          <div style={{ color: '#7A8599', fontSize: 12, marginBottom: 10 }}>Así otros viajeros saben si tu oferta sigue vigente</div>
+          <input type="datetime-local" value={form.available_until}
+            onChange={e => setForm(p => ({ ...p, available_until: e.target.value }))}
+            min={new Date().toISOString().slice(0, 16)}
+            style={{ width: '100%', border: '1.5px solid #E5E7EB', borderRadius: 10, padding: '10px 12px', fontSize: 15, boxSizing: 'border-box', color: '#0D1B2A' }} />
         </div>
 
         {message && (
