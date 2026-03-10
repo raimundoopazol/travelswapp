@@ -12,6 +12,7 @@ export default function Rating() {
   const [swap, setSwap] = useState(null)
   const [stars, setStars] = useState(0)
   const [tags, setTags] = useState([])
+  const [comment, setComment] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const router = useRouter()
@@ -26,7 +27,6 @@ export default function Rating() {
       const { data: otherData } = await supabase.from('users').select('*').eq('id', otherId).single()
       if (otherData) setOther(otherData)
 
-      // Fetch most recent swap between the two
       const { data: swapData } = await supabase
         .from('swaps')
         .select('*')
@@ -55,10 +55,10 @@ export default function Rating() {
       await supabase.from('swaps').update({
         [ratingField]: stars,
         [tagsField]: tags,
+        comment,
       }).eq('id', swap.id)
     }
 
-    // Update the other user's average rating
     const { data: swaps } = await supabase
       .from('swaps')
       .select('rating_user1, rating_user2, user1_id, user2_id')
@@ -92,7 +92,6 @@ export default function Rating() {
 
   return (
     <main style={{ maxWidth: 430, margin: '0 auto', minHeight: '100vh', background: '#F4F6F9', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Header */}
       <div style={{ background: '#0D1B2A', padding: '20px 16px' }}>
         <div style={{ color: '#FFD000', fontWeight: 900, fontSize: 20 }}>Calificar swap</div>
         <div style={{ color: '#9BB0C9', fontSize: 13 }}>Tu opinión ayuda a otros viajeros</div>
@@ -127,7 +126,7 @@ export default function Rating() {
         </div>
 
         {/* Tags */}
-        <div style={{ background: '#fff', borderRadius: 16, padding: 20, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, marginBottom: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           <div style={{ fontWeight: 700, color: '#0D1B2A', marginBottom: 12 }}>Agrega etiquetas</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {TAGS.map(t => (
@@ -140,6 +139,17 @@ export default function Rating() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Comment */}
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontWeight: 700, color: '#0D1B2A', marginBottom: 8 }}>
+            Comentario <span style={{ color: '#7A8599', fontWeight: 400, fontSize: 13 }}>(opcional)</span>
+          </div>
+          <textarea value={comment} onChange={e => setComment(e.target.value)}
+            placeholder="Cuéntanos cómo fue el encuentro..."
+            rows={3}
+            style={{ width: '100%', border: '1.5px solid #E5E7EB', borderRadius: 10, padding: '10px 12px', fontSize: 14, resize: 'none', boxSizing: 'border-box', fontFamily: 'system-ui, sans-serif' }} />
         </div>
 
         <button onClick={handleSubmit} disabled={stars === 0 || loading}

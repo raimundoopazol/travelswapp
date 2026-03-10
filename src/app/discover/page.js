@@ -141,7 +141,16 @@ export default function Discover() {
                   </span>
                 )}
               </div>
-              <button onClick={() => router.push(`/chat/${l.user_id}`)} style={{ width: '100%', background: '#FFD000', border: 'none', borderRadius: 10, padding: '9px 0', fontWeight: 800, color: '#0D1B2A', fontSize: 14, cursor: 'pointer' }}>
+              <button onClick={() => {
+                const params = new URLSearchParams({
+                  listing: l.id,
+                  have: l.currency_have,
+                  want: l.currency_want,
+                  rate: l.rate,
+                  amount: l.amount,
+                })
+                router.push(`/chat/${l.user_id}?${params.toString()}`)
+              }} style={{ width: '100%', background: '#FFD000', border: 'none', borderRadius: 10, padding: '9px 0', fontWeight: 800, color: '#0D1B2A', fontSize: 14, cursor: 'pointer' }}>
                 💬 Iniciar Chat
               </button>
             </div>
